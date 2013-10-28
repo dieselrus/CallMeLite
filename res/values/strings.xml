@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Позвони мне (Lite)</string>
+    <string name="action_settings">Settings</string>
+    <string name="StartUSSD">*110*</string>
+    <string name="Abonent">Абонент:</string>
+    <string name="USSD">МТС - *110*&lt;Номер&gt;# \nБилайн - *144#&lt;Номер&gt;# \nМегафон - *144*&lt;Номер&gt;# \nТеле2 - *118*&lt;Номер&gt;# \nРостелеком (БВК) - *141*&lt;Номер&gt;# \n </string>
+</resources>

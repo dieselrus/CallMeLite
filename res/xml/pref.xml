@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+	 xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="Оператор связи">
+        <ListPreference
+            android:title="Выберите оператора"
+            android:key="defaultOperator"           
+            android:defaultValue="1"
+            android:entries="@array/listArray"
+            android:entryValues="@array/listValues" />
+        
+        <EditTextPreference
+			 android:key="otherStartUSSD"
+			 android:summary="Введите префикс до номера\n *110*Номер#. Префикс - *110*."
+			 android:title="Другой оператор"/>
+    </PreferenceCategory>	 
+		
+	<PreferenceCategory   
+	    android:title="Прочее">
+		<CheckBoxPreference
+		    android:key="CloseApp"
+		    android:summary="Закрыть приложение после отправки запроса."
+		    android:title="Закрыть приложение"/>
+	</PreferenceCategory>
+</PreferenceScreen>
