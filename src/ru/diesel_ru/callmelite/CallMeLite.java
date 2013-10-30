@@ -23,15 +23,18 @@ public class CallMeLite extends Activity {
 	protected static final int PICK_RESULT = 0;
 	static final private int PHONE_NUMBER = 3;
 	
-	String strOprator = "";
+	private String strOprator = "";
 	private boolean blClose = false;
-	SharedPreferences sp;
+	private SharedPreferences sp;
+	private int iMount = 1;
+	private int iSMSCount = 0;
 	
-	ImageButton buttonSelectContact;
-	ImageButton buttonSelectFavoritesContact;
-	ImageButton buttonSend;
+	private ImageButton buttonSelectContact;
+	private ImageButton buttonSelectFavoritesContact;
+	private ImageButton buttonSend;
 	
-	TextView txtPhoneNumber;
+	private TextView txtPhoneNumber;
+	private TextView txtCount;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -41,11 +44,16 @@ public class CallMeLite extends Activity {
 		sp = PreferenceManager.getDefaultSharedPreferences(this);
 		strOprator = sp.getString("defaultOperator","0");
 		blClose = sp.getBoolean("CloseApp", false);
+		iMount = sp.getInt("iMount", 1);
+		iSMSCount = sp.getInt("iSMSCount", 0);
         
 		txtPhoneNumber = (TextView) findViewById(R.id.etPhone);
+		txtCount = (TextView) findViewById(R.id.tvCount);
 		buttonSelectContact = (ImageButton) findViewById(R.id.btnContacts);
         buttonSelectFavoritesContact = (ImageButton) findViewById(R.id.btnFContacts);
         buttonSend = (ImageButton) findViewById(R.id.btnSend);
+        
+        txtCount.setText("Отправлено " + iSMSCount + " из 15.");
         
         Intent localIntent = getIntent();
         if (localIntent.getAction().contains("android.intent.action.SENDTO")){
@@ -78,7 +86,10 @@ public class CallMeLite extends Activity {
 				return;
 			}
 
-			startActivity(_intent);
+        	if(AcceptSend()){
+        		startActivity(_intent);
+        	}
+        	
 			finish();
         }        
         
@@ -197,8 +208,10 @@ public class CallMeLite extends Activity {
 			return;
 		}
 
-		startActivity(_intent);
-		
+    	if(AcceptSend()){
+    		startActivity(_intent);
+    	}
+    	
 		if(blClose)     
 	        finish();
     }
@@ -213,6 +226,8 @@ public class CallMeLite extends Activity {
     protected void onResume() {
 		strOprator = sp.getString("defaultOperator","0");
 		blClose = sp.getBoolean("CloseApp", false);
+		iMount = sp.getInt("iMount", 1);
+		iSMSCount = sp.getInt("iSMSCount", 0);
 		super.onResume();
     }
 
@@ -226,6 +241,27 @@ public class CallMeLite extends Activity {
     protected void onStart() {
     	strOprator = sp.getString("defaultOperator","0");
     	blClose = sp.getBoolean("CloseApp", false);
+    	iMount = sp.getInt("iMount", 1);
+    	iSMSCount = sp.getInt("iSMSCount", 0);
 		super.onStart();
+    }
+    
+    private boolean AcceptSend(){
+    	java.util.Calendar calendar = java.util.Calendar.getInstance(java.util.TimeZone.getDefault(), java.util.Locale.getDefault());
+    	calendar.setTime(new java.util.Date());
+    	//int currentYear = calendar.get(java.util.Calendar.YEAR);
+    	int currentMount = calendar.get(java.util.Calendar.MONTH);
+    	if(currentMount == iMount && iSMSCount <= 15){
+    		sp.edit().putInt("iMount", currentMount);
+    		sp.edit().apply();
+    		sp.edit().putInt("iSMSCount", iSMSCount - 1);
+    		sp.edit().apply();
+    		txtCount.setText("Отправлено " + iSMSCount + " из 15.");
+    		
+    		return true;
+    	} else {
+    		Toast.makeText(getApplicationContext(), "Вы израсходовали все СМС!\n Приобретите полную версию.", Toast.LENGTH_SHORT).show();
+    		return false;
+    	}
     }
 }

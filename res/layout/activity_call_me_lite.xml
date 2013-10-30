@@ -66,4 +66,14 @@
         android:layout_marginTop="15dp"
         android:text="@string/USSD" />
 
+    <TextView
+        android:id="@+id/tvCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/btnSend"
+        android:layout_alignParentLeft="true"
+        android:layout_alignRight="@+id/etPhone"
+        android:layout_alignTop="@+id/btnSend"
+        android:textAlignment="center" />
+
 </RelativeLayout>
