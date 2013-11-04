@@ -16,7 +16,7 @@ public class Abaut extends Activity {
         TextView tv = (TextView) findViewById(R.id.abaut);
         
         tv.setGravity(Gravity.CENTER);        
-        tv.setText(Html.fromHtml("<html><body><h1>&nbsp;</h1><p style=\"text-align: center;\"><strong>О программе</strong></p><p>Программа предназначена для облегчения отправки USSD запроса с просьбой перезвонить, если данная возможность поддерживается оператором.</p><p>Автор не несет ответственности за доставку сообщения получателю.</p><p>&nbsp;</p><p><strong>Автор:</strong>Гамза Денис.</p><p><strong>E-mail: </strong><a href=\"mailto:denis.gamza@gmail.com\">denis.gamza@gmail.com</a></p></body></html>"));
+        tv.setText(Html.fromHtml("<html><body><h1>&nbsp;</h1><p style=\"text-align: center;\"><strong>ќ программе</strong></p><p>ѕрограмма предназначена дл€ облегчени€ отправки USSD запроса с просьбой перезвонить, если данна€ возможность поддерживаетс€ оператором.</p><p>јвтор не несет ответственности за доставку сообщени€ получателю.</p><p>&nbsp;</p><p><strong>јвтор: </strong> √амза ƒенис.</p><p><strong>E-mail: </strong><a href=\"mailto:denis.gamza@gmail.com\"> denis.gamza@gmail.com</a></p></body></html>"));
 	
         tv.setOnClickListener(new View.OnClickListener() {
         	public void onClick(View v) {

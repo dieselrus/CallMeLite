@@ -1,5 +1,7 @@
 package ru.diesel_ru.callmelite;
 
+import java.util.Calendar;
+
 import ru.diesel_ru.callmelite.Abaut;
 import ru.diesel_ru.callmelite.FavContList;
 import ru.diesel_ru.callmelite.PrefActivity;
@@ -36,15 +38,26 @@ public class CallMeLite extends Activity {
 	private TextView txtPhoneNumber;
 	private TextView txtCount;
 	
+	private Calendar calendar;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_call_me_lite);
 		
+		calendar = Calendar.getInstance(java.util.TimeZone.getDefault(), java.util.Locale.getDefault());
+    	calendar.setTime(new java.util.Date());
+    	
 		sp = PreferenceManager.getDefaultSharedPreferences(this);
 		strOprator = sp.getString("defaultOperator","0");
 		blClose = sp.getBoolean("CloseApp", false);
-		iMount = sp.getInt("iMount", 1);
+		iMount = sp.getInt("iMount", calendar.get(java.util.Calendar.MONTH));
+		
+		// Если текущий месяц не равен записаному. сбрасываем счетчик СМС
+        if(iMount != calendar.get(java.util.Calendar.MONTH)){
+        	resetSMSCount();
+        }
+        
 		iSMSCount = sp.getInt("iSMSCount", 0);
         
 		txtPhoneNumber = (TextView) findViewById(R.id.etPhone);
@@ -226,7 +239,7 @@ public class CallMeLite extends Activity {
     protected void onResume() {
 		strOprator = sp.getString("defaultOperator","0");
 		blClose = sp.getBoolean("CloseApp", false);
-		iMount = sp.getInt("iMount", 1);
+		iMount = sp.getInt("iMount", calendar.get(java.util.Calendar.MONTH));
 		iSMSCount = sp.getInt("iSMSCount", 0);
 		super.onResume();
     }
@@ -241,27 +254,44 @@ public class CallMeLite extends Activity {
     protected void onStart() {
     	strOprator = sp.getString("defaultOperator","0");
     	blClose = sp.getBoolean("CloseApp", false);
-    	iMount = sp.getInt("iMount", 1);
+    	iMount = sp.getInt("iMount", calendar.get(java.util.Calendar.MONTH));
     	iSMSCount = sp.getInt("iSMSCount", 0);
 		super.onStart();
     }
     
+    // Проверяем разрешена ли отправка
     private boolean AcceptSend(){
-    	java.util.Calendar calendar = java.util.Calendar.getInstance(java.util.TimeZone.getDefault(), java.util.Locale.getDefault());
+    	//java.util.Calendar calendar = java.util.Calendar.getInstance(java.util.TimeZone.getDefault(), java.util.Locale.getDefault());
     	calendar.setTime(new java.util.Date());
     	//int currentYear = calendar.get(java.util.Calendar.YEAR);
     	int currentMount = calendar.get(java.util.Calendar.MONTH);
-    	if(currentMount == iMount && iSMSCount <= 15){
-    		sp.edit().putInt("iMount", currentMount);
-    		sp.edit().apply();
-    		sp.edit().putInt("iSMSCount", iSMSCount - 1);
-    		sp.edit().apply();
+    	
+    	if(currentMount == iMount && iSMSCount < 15){
+    		SharedPreferences.Editor editor = sp.edit();        		
+    		
+    		editor.putInt("iMount", currentMount);
+    		//sp.edit().apply();
+    		//editor.commit();
+    		iSMSCount = iSMSCount + 1;
+    		editor.putInt("iSMSCount", iSMSCount);
+    		//sp.edit().apply();
+    		editor.commit();
+    		
+    		iSMSCount = sp.getInt("iSMSCount", 0);
+    		
     		txtCount.setText("Отправлено " + iSMSCount + " из 15.");
     		
     		return true;
     	} else {
-    		Toast.makeText(getApplicationContext(), "Вы израсходовали все СМС!\n Приобретите полную версию.", Toast.LENGTH_SHORT).show();
+    		Toast.makeText(getApplicationContext(), "Вы израсходовали все \"маячки\"!\n Приобретите полную версию.", Toast.LENGTH_SHORT).show();
     		return false;
     	}
+    }
+    // Сбрасываем счетчик СМС
+    private void resetSMSCount(){
+    	SharedPreferences.Editor editor = sp.edit();
+    	editor.putInt("iSMSCount", 0);
+    	editor.putInt("iMount", calendar.get(java.util.Calendar.MONTH));
+    	editor.commit();
     }
 }
