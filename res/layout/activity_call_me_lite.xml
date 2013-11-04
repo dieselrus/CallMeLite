@@ -43,6 +43,7 @@
         android:layout_alignParentLeft="true"
         android:layout_marginRight="13dp"
         android:layout_toLeftOf="@+id/btnContacts"
+        android:inputType="phone"
         android:ems="10" />
 
     <ImageButton
